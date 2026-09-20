@@ -22,6 +22,8 @@
     .header { padding: 20px 20px 10px; display: flex; align-items: center; justify-content: space-between; }
     .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
     .logo span { color: var(--accent); }
+    .tagline { padding: 0 20px 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .verified-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: #4f9ef8; border-radius: 50%; font-size: 10px; font-weight: 800; color: #fff; margin-left: 5px; vertical-align: middle; line-height: 1; }
     .pill { background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--muted); }
 
     /* PROGRESS */
@@ -105,9 +107,10 @@
   <!-- GAME VIEW -->
   <div id="game-view" style="display:flex; flex-direction:column; flex:1;">
     <div class="header">
-      <div class="logo">Hot or <span>Bot?</span></div>
+      <div class="logo">Hot or <span>Bot</span></div>
       <div class="pill" id="round-label">1 / 8</div>
     </div>
+    <div class="tagline">Arm Yourself With Data</div>
     <div class="progress-bar">
       <div class="progress-fill" id="progress-fill" style="width:0%"></div>
     </div>
@@ -172,14 +175,14 @@
 const BASE = 'https://pearlouisebot.github.io/hotorbotdemo_Pearlouise';
 
 const profiles = [
-  { name: 'Jake',   age: 29, profession: 'Software Engineer',   education: 'Stanford MBA',  clip: 1 },
-  { name: 'Liam',   age: 31, profession: 'VC-backed Founder',   education: 'Harvard Law',   clip: 2 },
-  { name: 'Noah',   age: 28, profession: 'Product Manager',     education: 'MIT',           clip: 3 },
-  { name: 'Ethan',  age: 33, profession: 'Surgeon',             education: 'Cornell MD',    clip: 4 },
-  { name: 'Mason',  age: 30, profession: 'Investment Banker',   education: 'Wharton MBA',  clip: 5 },
-  { name: 'Logan',  age: 27, profession: 'Architect',           education: 'Yale',          clip: 6 },
-  { name: 'Lucas',  age: 32, profession: 'Entrepreneur',        education: 'Columbia MBA',  clip: 7 },
-  { name: 'Aiden',  age: 34, profession: 'Venture Capitalist',  education: 'Dartmouth',     clip: 8 },
+  { name: 'Jake',   age: 29, profession: 'Software Engineer',   education: 'Stanford MBA',  height: "6'1\"",  clip: 1 },
+  { name: 'Liam',   age: 31, profession: 'VC-backed Founder',   education: 'Harvard Law',   height: "6'0\"",  clip: 2 },
+  { name: 'Noah',   age: 28, profession: 'Product Manager',     education: 'MIT',           height: "5'11\"", clip: 3 },
+  { name: 'Ethan',  age: 33, profession: 'Surgeon',             education: 'Cornell MD',    height: "6'2\"",  clip: 4 },
+  { name: 'Mason',  age: 30, profession: 'Investment Banker',   education: 'Wharton MBA',   height: "6'0\"",  clip: 5 },
+  { name: 'Logan',  age: 27, profession: 'Architect',           education: 'Yale',          height: "5'10\"", clip: 6 },
+  { name: 'Lucas',  age: 32, profession: 'Entrepreneur',        education: 'Columbia MBA',  height: "6'1\"",  clip: 7 },
+  { name: 'Aiden',  age: 34, profession: 'Venture Capitalist',  education: 'Dartmouth',     height: "6'3\"",  clip: 8 },
 ];
 
 const shuffled = [...profiles].sort(() => Math.random() - 0.5);
@@ -205,8 +208,8 @@ function load(index) {
   const p = shuffled[index];
   document.getElementById('round-label').textContent = `${index + 1} / ${shuffled.length}`;
   document.getElementById('progress-fill').style.width = `${(index / shuffled.length) * 100}%`;
-  document.getElementById('card-name').textContent = `${p.name}, ${p.age}`;
-  document.getElementById('card-meta').textContent = `${p.profession} · ${p.education}`;
+  document.getElementById('card-name').innerHTML = `${p.name}, ${p.age} <span class="verified-badge">✓</span>`;
+  document.getElementById('card-meta').textContent = `${p.profession} · ${p.education} · ${p.height}`;
   document.getElementById('card-prompt').textContent = '"why you shouldn\'t date me"';
   document.getElementById('main-video').src = `${BASE}/clips/clip-${p.clip}.mp4`;
   document.getElementById('main-video').load();
@@ -237,7 +240,7 @@ function rate(score) {
 
   // show reveal — all are bots
   const ro = document.getElementById('reveal-overlay');
-  document.getElementById('reveal-verdict').textContent = 'AI';
+  document.getElementById('reveal-verdict').textContent = 'BOT';
   document.getElementById('reveal-verdict').className = 'reveal-verdict bot';
   document.getElementById('reveal-your-score').innerHTML = `You gave them a <span>${score}</span>`;
   document.getElementById('reveal-sub').textContent = 'Entirely synthesized by Sora. Not a real person.';
