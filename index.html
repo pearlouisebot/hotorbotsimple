@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#090b10" />
+  <title>Hot or Bot</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #c8f135;
+      --bg: #090b10;
+      --panel: #111318;
+      --border: rgba(255,255,255,0.08);
+      --muted: rgba(255,255,255,0.45);
+    }
+    html, body { height: 100%; background: var(--bg); color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    #app { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+    .shell { width: 100%; max-width: 430px; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
+
+    /* HEADER */
+    .header { padding: 20px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    .pill { background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--muted); }
+
+    /* PROGRESS */
+    .progress-bar { margin: 0 20px 16px; height: 4px; border-radius: 999px; background: var(--panel); overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+
+    /* CARD */
+    .card-wrap { flex: 1; padding: 0 16px; display: flex; flex-direction: column; }
+    .card { position: relative; border-radius: 28px; overflow: hidden; border: 1px solid var(--border); background: var(--panel);
+      height: calc(100dvh - 260px); min-height: 320px; }
+    .card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); }
+    .card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; }
+    .card-name { font-size: 26px; font-weight: 700; }
+    .card-meta { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+    .card-prompt { margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.5); font-style: italic; }
+
+    /* REVEAL OVERLAY */
+    .reveal-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.82); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.35s ease; pointer-events: none; border-radius: 28px; }
+    .reveal-overlay.show { opacity: 1; pointer-events: auto; }
+    .reveal-icon { font-size: 64px; }
+    .reveal-label { font-size: 28px; font-weight: 800; margin-top: 8px; letter-spacing: -0.5px; }
+    .reveal-sub { font-size: 14px; color: var(--muted); margin-top: 6px; text-align: center; padding: 0 24px; }
+    .reveal-correct { color: var(--accent); }
+    .reveal-wrong { color: #ff5f57; }
+
+    /* BUTTONS */
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 16px 0; }
+    .btn { border: none; border-radius: 22px; padding: 20px 16px; font-size: 17px; font-weight: 700; cursor: pointer; transition: transform 0.12s, opacity 0.12s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn:active { transform: scale(0.96); }
+    .btn-hot { background: var(--accent); color: #090b10; }
+    .btn-bot { background: var(--panel); color: #fff; border: 1px solid var(--border); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* NEXT / CTA */
+    .next-row { padding: 12px 16px 20px; }
+    .btn-next { width: 100%; border: none; border-radius: 22px; padding: 18px; font-size: 16px; font-weight: 700; background: var(--panel); color: #fff; cursor: pointer; border: 1px solid var(--border); display: none; transition: background 0.2s; }
+    .btn-next.show { display: block; }
+    .btn-next:hover { background: #1e2128; }
+
+    /* SCORE SCREEN */
+    .score-screen { display: none; flex-direction: column; flex: 1; padding: 32px 20px; }
+    .score-screen.show { display: flex; }
+    .score-headline { font-size: 40px; font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
+    .score-headline span { color: var(--accent); }
+    .score-sub { margin-top: 12px; font-size: 15px; color: var(--muted); line-height: 1.5; }
+    .twist-box { margin-top: 28px; background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 20px; }
+    .twist-label { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .twist-text { font-size: 17px; font-weight: 600; margin-top: 8px; line-height: 1.4; }
+    .twist-detail { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+    .score-grid { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .score-tile { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 16px; text-align: center; }
+    .score-tile-num { font-size: 32px; font-weight: 800; color: var(--accent); }
+    .score-tile-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .btn-replay { margin-top: 24px; width: 100%; border: none; border-radius: 22px; padding: 20px; font-size: 16px; font-weight: 700; background: var(--accent); color: #090b10; cursor: pointer; }
+
+    /* FADE */
+    .fade-in { animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+<div id="app">
+<div class="shell">
+
+  <!-- GAME VIEW -->
+  <div id="game-view">
+    <div class="header">
+      <div class="logo">Hot or <span>Bot?</span></div>
+      <div class="pill" id="round-label">1 / 8</div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card" id="main-card">
+        <video id="main-video" autoplay loop muted playsinline></video>
+        <div class="card-overlay"></div>
+        <div class="card-info">
+          <div class="card-name" id="card-name"></div>
+          <div class="card-meta" id="card-meta"></div>
+          <div class="card-prompt" id="card-prompt"></div>
+        </div>
+        <div class="reveal-overlay" id="reveal-overlay">
+          <div class="reveal-icon" id="reveal-icon"></div>
+          <div class="reveal-label" id="reveal-label"></div>
+          <div class="reveal-sub" id="reveal-sub"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-hot" id="btn-hot" onclick="vote('hot')">🔥 Hot</button>
+      <button class="btn btn-bot" id="btn-bot" onclick="vote('bot')">🤖 Bot</button>
+    </div>
+
+    <div class="next-row">
+      <button class="btn-next" id="btn-next" onclick="next()">Next →</button>
+    </div>
+  </div>
+
+  <!-- SCORE VIEW -->
+  <div class="score-screen" id="score-screen">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="score-headline">You spotted <span id="final-score">0</span>/8<br>bots.</div>
+      <div class="score-sub" id="score-flavor"></div>
+
+      <div class="twist-box fade-in">
+        <div class="twist-label">Plot twist 🤯</div>
+        <div class="twist-text">Every single one was AI-generated.</div>
+        <div class="twist-detail">All 8 profiles were created using OpenAI Sora. No real humans. The faces, voices, and mannerisms were synthesized from scratch. This is where dating apps are headed.</div>
+      </div>
+
+      <div class="score-grid">
+        <div class="score-tile">
+          <div class="score-tile-num" id="stat-correct">0</div>
+          <div class="score-tile-label">Correctly IDed</div>
+        </div>
+        <div class="score-tile">
+          <div class="score-tile-num" id="stat-fooled">0</div>
+          <div class="score-tile-label">Fooled by AI</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-replay" onclick="replay()">Play again ↩</button>
+  </div>
+
+</div>
+</div>
+
+<script>
+const BASE = 'https://pearlouisebot.github.io/hotorbotdemo_Pearlouise';
+
+const profiles = [
+  { name: 'Jake',    age: 29, profession: 'Software Engineer', education: 'Stanford MBA',   clip: 1, prompt: 'a hill I will die on' },
+  { name: 'Liam',    age: 31, profession: 'VC-backed Founder', education: 'Harvard Law',    clip: 2, prompt: 'my worst travel story' },
+  { name: 'Noah',    age: 28, profession: 'Product Manager',   education: 'MIT',            clip: 3, prompt: 'my most chaotic dinner party story' },
+  { name: 'Ethan',   age: 33, profession: 'Surgeon',           education: 'Cornell MD',     clip: 4, prompt: 'my oddly specific green flag' },
+  { name: 'Mason',   age: 30, profession: 'Investment Banker', education: 'Wharton MBA',   clip: 5, prompt: 'the moment I knew I had to move here' },
+  { name: 'Logan',   age: 27, profession: 'Architect',         education: 'Yale',           clip: 6, prompt: 'a hill I will die on' },
+  { name: 'Lucas',   age: 32, profession: 'Entrepreneur',      education: 'Columbia MBA',   clip: 7, prompt: 'my worst travel story' },
+  { name: 'Aiden',   age: 34, profession: 'Venture Capitalist',education: 'Dartmouth',      clip: 8, prompt: 'my most chaotic dinner party story' },
+];
+
+// Shuffle
+const shuffled = [...profiles].sort(() => Math.random() - 0.5);
+
+let current = 0;
+let correctCount = 0;
+let fooledCount = 0;
+let voted = false;
+
+function load(index) {
+  voted = false;
+  const p = shuffled[index];
+  document.getElementById('round-label').textContent = `${index + 1} / ${shuffled.length}`;
+  document.getElementById('progress-fill').style.width = `${(index / shuffled.length) * 100}%`;
+  document.getElementById('card-name').textContent = `${p.name}, ${p.age}`;
+  document.getElementById('card-meta').textContent = `${p.profession} · ${p.education}`;
+  document.getElementById('card-prompt').textContent = `"${p.prompt}"`;
+  document.getElementById('main-video').src = `${BASE}/clips/clip-${p.clip}.mp4`;
+  document.getElementById('main-video').load();
+  document.getElementById('main-video').play().catch(() => {});
+
+  const ro = document.getElementById('reveal-overlay');
+  ro.classList.remove('show');
+  document.getElementById('btn-hot').disabled = false;
+  document.getElementById('btn-bot').disabled = false;
+  document.getElementById('btn-next').classList.remove('show');
+}
+
+function vote(choice) {
+  if (voted) return;
+  voted = true;
+  // All profiles are AI — correct answer is always 'bot'
+  const correct = (choice === 'bot');
+  if (correct) correctCount++; else fooledCount++;
+
+  document.getElementById('btn-hot').disabled = true;
+  document.getElementById('btn-bot').disabled = true;
+
+  const ro = document.getElementById('reveal-overlay');
+  const icon = document.getElementById('reveal-icon');
+  const label = document.getElementById('reveal-label');
+  const sub = document.getElementById('reveal-sub');
+
+  if (correct) {
+    icon.textContent = '🤖';
+    label.innerHTML = '<span class="reveal-correct">You got it!</span>';
+    sub.textContent = 'AI-generated by Sora. Impressive catch.';
+  } else {
+    icon.textContent = '😅';
+    label.innerHTML = '<span class="reveal-wrong">Nope — AI!</span>';
+    sub.textContent = 'Fooled you. This profile was entirely synthesized by Sora.';
+  }
+
+  ro.classList.add('show');
+  document.getElementById('btn-next').textContent = current < shuffled.length - 1 ? 'Next →' : 'See results';
+  document.getElementById('btn-next').classList.add('show');
+}
+
+function next() {
+  current++;
+  if (current >= shuffled.length) {
+    showScore();
+  } else {
+    load(current);
+  }
+}
+
+function showScore() {
+  document.getElementById('game-view').style.display = 'none';
+  document.getElementById('score-screen').classList.add('show');
+  document.getElementById('final-score').textContent = correctCount;
+  document.getElementById('stat-correct').textContent = correctCount;
+  document.getElementById('stat-fooled').textContent = fooledCount;
+
+  const flavors = [
+    "Even the AI is shocked.",
+    "You're basically a Turing test judge.",
+    "Honestly? The bots are flattered.",
+    "You had one job... just kidding, they're hard to spot.",
+    "Almost had you. Almost.",
+    "You should be worried. We all should.",
+  ];
+  const pct = correctCount / shuffled.length;
+  let flavor;
+  if (pct === 1) flavor = "Perfect score. Are *you* the bot? 👀";
+  else if (pct >= 0.75) flavor = "Not bad. You've got a future in AI detection.";
+  else if (pct >= 0.5) flavor = "50/50 — about as good as a coin flip.";
+  else if (pct >= 0.25) flavor = "The bots won this round.";
+  else flavor = "Zero. They got you completely. Welcome to the future.";
+
+  document.getElementById('score-flavor').textContent = flavor;
+}
+
+function replay() {
+  current = 0; correctCount = 0; fooledCount = 0;
+  shuffled.sort(() => Math.random() - 0.5);
+  document.getElementById('score-screen').classList.remove('show');
+  document.getElementById('game-view').style.display = '';
+  load(0);
+}
+
+// Init
+load(0);
+</script>
+</body>
+</html>
