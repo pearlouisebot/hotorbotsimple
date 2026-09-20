@@ -15,73 +15,87 @@
       --muted: rgba(255,255,255,0.45);
     }
     html, body { height: 100%; background: var(--bg); color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-    #app { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+    #app { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; }
     .shell { width: 100%; max-width: 430px; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
 
     /* HEADER */
-    .header { padding: 20px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
+    .header { padding: 20px 20px 10px; display: flex; align-items: center; justify-content: space-between; }
     .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
     .logo span { color: var(--accent); }
     .pill { background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--muted); }
 
     /* PROGRESS */
-    .progress-bar { margin: 0 20px 16px; height: 4px; border-radius: 999px; background: var(--panel); overflow: hidden; }
+    .progress-bar { margin: 0 20px 14px; height: 4px; border-radius: 999px; background: var(--panel); overflow: hidden; }
     .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
 
     /* CARD */
-    .card-wrap { flex: 1; padding: 0 16px; display: flex; flex-direction: column; }
-    .card { position: relative; border-radius: 28px; overflow: hidden; border: 1px solid var(--border); background: var(--panel);
-      height: calc(100dvh - 260px); min-height: 320px; }
+    .card-wrap { flex: 1; padding: 0 16px; display: flex; flex-direction: column; min-height: 0; }
+    .card { position: relative; border-radius: 28px; overflow: hidden; border: 1px solid var(--border); background: var(--panel); flex: 1; min-height: 280px; }
     .card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); }
+    .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 50%, transparent 100%); }
     .card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; }
     .card-name { font-size: 26px; font-weight: 700; }
     .card-meta { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
-    .card-prompt { margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.5); font-style: italic; }
+    .card-prompt { margin-top: 8px; font-size: 12px; color: rgba(255,255,255,0.5); font-style: italic; }
 
     /* REVEAL OVERLAY */
-    .reveal-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.82); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.35s ease; pointer-events: none; border-radius: 28px; }
+    .reveal-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.84); backdrop-filter: blur(6px);
+      opacity: 0; transition: opacity 0.3s ease; pointer-events: none; border-radius: 28px;
+      gap: 6px; padding: 24px;
+    }
     .reveal-overlay.show { opacity: 1; pointer-events: auto; }
-    .reveal-icon { font-size: 64px; }
-    .reveal-label { font-size: 28px; font-weight: 800; margin-top: 8px; letter-spacing: -0.5px; }
-    .reveal-sub { font-size: 14px; color: var(--muted); margin-top: 6px; text-align: center; padding: 0 24px; }
-    .reveal-correct { color: var(--accent); }
-    .reveal-wrong { color: #ff5f57; }
+    .reveal-verdict { font-size: 42px; font-weight: 900; letter-spacing: -1px; }
+    .reveal-verdict.bot { color: var(--accent); }
+    .reveal-verdict.human { color: #a8f0c6; }
+    .reveal-your-score { font-size: 15px; color: rgba(255,255,255,0.55); }
+    .reveal-your-score span { color: #fff; font-weight: 700; }
+    .reveal-sub { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.5; margin-top: 4px; }
 
-    /* BUTTONS */
-    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 16px 0; }
-    .btn { border: none; border-radius: 22px; padding: 20px 16px; font-size: 17px; font-weight: 700; cursor: pointer; transition: transform 0.12s, opacity 0.12s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn:active { transform: scale(0.96); }
-    .btn-hot { background: var(--accent); color: #090b10; }
-    .btn-bot { background: var(--panel); color: #fff; border: 1px solid var(--border); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    /* RATING GRID */
+    .rating-section { padding: 14px 16px 4px; }
+    .rating-label { font-size: 12px; color: var(--muted); margin-bottom: 10px; text-align: center; letter-spacing: 0.04em; text-transform: uppercase; }
+    .rating-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .rating-btn {
+      height: 52px; border-radius: 14px;
+      border: 1px solid var(--border); background: var(--panel);
+      color: #fff; font-size: 18px; font-weight: 700;
+      cursor: pointer; transition: background 0.1s, border-color 0.1s, transform 0.1s;
+    }
+    .rating-btn:hover { background: rgba(200,241,53,0.15); border-color: var(--accent); }
+    .rating-btn:active { transform: scale(0.94); }
+    .rating-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    .rating-btn.selected { background: var(--accent); border-color: var(--accent); color: #090b10; }
 
-    /* NEXT / CTA */
-    .next-row { padding: 12px 16px 20px; }
-    .btn-next { width: 100%; border: none; border-radius: 22px; padding: 18px; font-size: 16px; font-weight: 700; background: var(--panel); color: #fff; cursor: pointer; border: 1px solid var(--border); display: none; transition: background 0.2s; }
+    /* NEXT */
+    .next-row { padding: 12px 16px 24px; }
+    .btn-next {
+      width: 100%; border: none; border-radius: 22px; padding: 18px;
+      font-size: 16px; font-weight: 700; background: var(--panel); color: #fff;
+      cursor: pointer; border: 1px solid var(--border); display: none;
+    }
     .btn-next.show { display: block; }
-    .btn-next:hover { background: #1e2128; }
 
     /* SCORE SCREEN */
-    .score-screen { display: none; flex-direction: column; flex: 1; padding: 32px 20px; }
+    .score-screen { display: none; flex-direction: column; flex: 1; padding: 36px 20px 28px; }
     .score-screen.show { display: flex; }
-    .score-headline { font-size: 40px; font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
+    .score-headline { font-size: 38px; font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
     .score-headline span { color: var(--accent); }
-    .score-sub { margin-top: 12px; font-size: 15px; color: var(--muted); line-height: 1.5; }
+    .score-sub { margin-top: 10px; font-size: 15px; color: var(--muted); line-height: 1.5; }
     .twist-box { margin-top: 28px; background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 20px; }
     .twist-label { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-    .twist-text { font-size: 17px; font-weight: 600; margin-top: 8px; line-height: 1.4; }
+    .twist-text { font-size: 17px; font-weight: 600; margin-top: 8px; }
     .twist-detail { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
-    .score-grid { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .score-grid { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .score-tile { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 16px; text-align: center; }
-    .score-tile-num { font-size: 32px; font-weight: 800; color: var(--accent); }
+    .score-tile-num { font-size: 30px; font-weight: 800; color: var(--accent); }
     .score-tile-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
     .btn-replay { margin-top: 24px; width: 100%; border: none; border-radius: 22px; padding: 20px; font-size: 16px; font-weight: 700; background: var(--accent); color: #090b10; cursor: pointer; }
 
-    /* FADE */
-    .fade-in { animation: fadeIn 0.4s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease; }
   </style>
 </head>
 <body>
@@ -89,14 +103,13 @@
 <div class="shell">
 
   <!-- GAME VIEW -->
-  <div id="game-view">
+  <div id="game-view" style="display:flex; flex-direction:column; flex:1;">
     <div class="header">
       <div class="logo">Hot or <span>Bot?</span></div>
       <div class="pill" id="round-label">1 / 8</div>
     </div>
-
     <div class="progress-bar">
-      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
     </div>
 
     <div class="card-wrap">
@@ -109,47 +122,47 @@
           <div class="card-prompt" id="card-prompt"></div>
         </div>
         <div class="reveal-overlay" id="reveal-overlay">
-          <div class="reveal-icon" id="reveal-icon"></div>
-          <div class="reveal-label" id="reveal-label"></div>
+          <div class="reveal-verdict" id="reveal-verdict"></div>
+          <div class="reveal-your-score" id="reveal-your-score"></div>
           <div class="reveal-sub" id="reveal-sub"></div>
         </div>
       </div>
     </div>
 
-    <div class="btn-row">
-      <button class="btn btn-hot" id="btn-hot" onclick="vote('hot')">🔥 Hot</button>
-      <button class="btn btn-bot" id="btn-bot" onclick="vote('bot')">🤖 Bot</button>
+    <div class="rating-section">
+      <div class="rating-label">Rate 1 – 10</div>
+      <div class="rating-grid" id="rating-grid"></div>
     </div>
 
     <div class="next-row">
-      <button class="btn-next" id="btn-next" onclick="next()">Next →</button>
+      <button class="btn-next" id="btn-next" onclick="next()">Next</button>
     </div>
   </div>
 
   <!-- SCORE VIEW -->
   <div class="score-screen" id="score-screen">
     <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-      <div class="score-headline">You spotted <span id="final-score">0</span>/8<br>bots.</div>
+      <div class="score-headline">Your avg:<br><span id="final-avg">0</span> / 10</div>
       <div class="score-sub" id="score-flavor"></div>
 
       <div class="twist-box fade-in">
-        <div class="twist-label">Plot twist 🤯</div>
+        <div class="twist-label">Plot twist</div>
         <div class="twist-text">Every single one was AI-generated.</div>
-        <div class="twist-detail">All 8 profiles were created using OpenAI Sora. No real humans. The faces, voices, and mannerisms were synthesized from scratch. This is where dating apps are headed.</div>
+        <div class="twist-detail">All 8 profiles were created using OpenAI Sora. No real humans — the faces, voices, and mannerisms synthesized from scratch. This is where dating is headed.</div>
       </div>
 
       <div class="score-grid">
         <div class="score-tile">
-          <div class="score-tile-num" id="stat-correct">0</div>
-          <div class="score-tile-label">Correctly IDed</div>
+          <div class="score-tile-num" id="stat-avg">-</div>
+          <div class="score-tile-label">Avg rating given</div>
         </div>
         <div class="score-tile">
-          <div class="score-tile-num" id="stat-fooled">0</div>
-          <div class="score-tile-label">Fooled by AI</div>
+          <div class="score-tile-num" id="stat-high">-</div>
+          <div class="score-tile-label">Highest rated bot</div>
         </div>
       </div>
     </div>
-    <button class="btn-replay" onclick="replay()">Play again ↩</button>
+    <button class="btn-replay" onclick="replay()">Play again</button>
   </div>
 
 </div>
@@ -159,71 +172,81 @@
 const BASE = 'https://pearlouisebot.github.io/hotorbotdemo_Pearlouise';
 
 const profiles = [
-  { name: 'Jake',    age: 29, profession: 'Software Engineer', education: 'Stanford MBA',   clip: 1, prompt: 'why you shouldn't date me' },
-  { name: 'Liam',    age: 31, profession: 'VC-backed Founder', education: 'Harvard Law',    clip: 2, prompt: 'why you shouldn't date me' },
-  { name: 'Noah',    age: 28, profession: 'Product Manager',   education: 'MIT',            clip: 3, prompt: 'why you shouldn't date me' },
-  { name: 'Ethan',   age: 33, profession: 'Surgeon',           education: 'Cornell MD',     clip: 4, prompt: 'why you shouldn't date me' },
-  { name: 'Mason',   age: 30, profession: 'Investment Banker', education: 'Wharton MBA',   clip: 5, prompt: 'why you shouldn't date me' },
-  { name: 'Logan',   age: 27, profession: 'Architect',         education: 'Yale',           clip: 6, prompt: 'why you shouldn't date me' },
-  { name: 'Lucas',   age: 32, profession: 'Entrepreneur',      education: 'Columbia MBA',   clip: 7, prompt: 'why you shouldn't date me' },
-  { name: 'Aiden',   age: 34, profession: 'Venture Capitalist',education: 'Dartmouth',      clip: 8, prompt: 'why you shouldn't date me' },
+  { name: 'Jake',   age: 29, profession: 'Software Engineer',   education: 'Stanford MBA',  clip: 1 },
+  { name: 'Liam',   age: 31, profession: 'VC-backed Founder',   education: 'Harvard Law',   clip: 2 },
+  { name: 'Noah',   age: 28, profession: 'Product Manager',     education: 'MIT',           clip: 3 },
+  { name: 'Ethan',  age: 33, profession: 'Surgeon',             education: 'Cornell MD',    clip: 4 },
+  { name: 'Mason',  age: 30, profession: 'Investment Banker',   education: 'Wharton MBA',  clip: 5 },
+  { name: 'Logan',  age: 27, profession: 'Architect',           education: 'Yale',          clip: 6 },
+  { name: 'Lucas',  age: 32, profession: 'Entrepreneur',        education: 'Columbia MBA',  clip: 7 },
+  { name: 'Aiden',  age: 34, profession: 'Venture Capitalist',  education: 'Dartmouth',     clip: 8 },
 ];
 
-// Shuffle
 const shuffled = [...profiles].sort(() => Math.random() - 0.5);
-
 let current = 0;
-let correctCount = 0;
-let fooledCount = 0;
-let voted = false;
+let ratings = []; // all scores given
+let rated = false;
+
+function buildGrid() {
+  const grid = document.getElementById('rating-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'rating-btn';
+    btn.textContent = i;
+    btn.id = 'rbtn-' + i;
+    btn.onclick = () => rate(i);
+    grid.appendChild(btn);
+  }
+}
 
 function load(index) {
-  voted = false;
+  rated = false;
   const p = shuffled[index];
   document.getElementById('round-label').textContent = `${index + 1} / ${shuffled.length}`;
   document.getElementById('progress-fill').style.width = `${(index / shuffled.length) * 100}%`;
   document.getElementById('card-name').textContent = `${p.name}, ${p.age}`;
   document.getElementById('card-meta').textContent = `${p.profession} · ${p.education}`;
-  document.getElementById('card-prompt').textContent = `"${p.prompt}"`;
+  document.getElementById('card-prompt').textContent = '"why you shouldn\'t date me"';
   document.getElementById('main-video').src = `${BASE}/clips/clip-${p.clip}.mp4`;
   document.getElementById('main-video').load();
   document.getElementById('main-video').play().catch(() => {});
 
-  const ro = document.getElementById('reveal-overlay');
-  ro.classList.remove('show');
-  document.getElementById('btn-hot').disabled = false;
-  document.getElementById('btn-bot').disabled = false;
+  document.getElementById('reveal-overlay').classList.remove('show');
   document.getElementById('btn-next').classList.remove('show');
+
+  // reset buttons
+  for (let i = 1; i <= 10; i++) {
+    const b = document.getElementById('rbtn-' + i);
+    if (b) { b.disabled = false; b.classList.remove('selected'); }
+  }
 }
 
-function vote(choice) {
-  if (voted) return;
-  voted = true;
-  // All profiles are AI — correct answer is always 'bot'
-  const correct = (choice === 'bot');
-  if (correct) correctCount++; else fooledCount++;
+function rate(score) {
+  if (rated) return;
+  rated = true;
+  ratings.push(score);
 
-  document.getElementById('btn-hot').disabled = true;
-  document.getElementById('btn-bot').disabled = true;
-
-  const ro = document.getElementById('reveal-overlay');
-  const icon = document.getElementById('reveal-icon');
-  const label = document.getElementById('reveal-label');
-  const sub = document.getElementById('reveal-sub');
-
-  if (correct) {
-    icon.textContent = '🤖';
-    label.innerHTML = '<span class="reveal-correct">You got it!</span>';
-    sub.textContent = 'AI-generated by Sora. Impressive catch.';
-  } else {
-    icon.textContent = '😅';
-    label.innerHTML = '<span class="reveal-wrong">Nope — AI!</span>';
-    sub.textContent = 'Fooled you. This profile was entirely synthesized by Sora.';
+  // highlight selected
+  for (let i = 1; i <= 10; i++) {
+    const b = document.getElementById('rbtn-' + i);
+    if (!b) continue;
+    b.disabled = true;
+    if (i === score) b.classList.add('selected');
   }
 
+  // show reveal — all are bots
+  const ro = document.getElementById('reveal-overlay');
+  document.getElementById('reveal-verdict').textContent = 'AI';
+  document.getElementById('reveal-verdict').className = 'reveal-verdict bot';
+  document.getElementById('reveal-your-score').innerHTML = `You gave them a <span>${score}</span>`;
+  document.getElementById('reveal-sub').textContent = 'Entirely synthesized by Sora. Not a real person.';
   ro.classList.add('show');
-  document.getElementById('btn-next').textContent = current < shuffled.length - 1 ? 'Next →' : 'See results';
-  document.getElementById('btn-next').classList.add('show');
+
+  const isLast = current >= shuffled.length - 1;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = isLast ? 'See results' : 'Next';
+  nextBtn.classList.add('show');
 }
 
 function next() {
@@ -238,38 +261,35 @@ function next() {
 function showScore() {
   document.getElementById('game-view').style.display = 'none';
   document.getElementById('score-screen').classList.add('show');
-  document.getElementById('final-score').textContent = correctCount;
-  document.getElementById('stat-correct').textContent = correctCount;
-  document.getElementById('stat-fooled').textContent = fooledCount;
 
-  const flavors = [
-    "Even the AI is shocked.",
-    "You're basically a Turing test judge.",
-    "Honestly? The bots are flattered.",
-    "You had one job... just kidding, they're hard to spot.",
-    "Almost had you. Almost.",
-    "You should be worried. We all should.",
-  ];
-  const pct = correctCount / shuffled.length;
+  const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '0';
+  const high = ratings.length ? Math.max(...ratings) : 0;
+
+  document.getElementById('final-avg').textContent = avg;
+  document.getElementById('stat-avg').textContent = avg;
+  document.getElementById('stat-high').textContent = high + '/10';
+
+  const n = parseFloat(avg);
   let flavor;
-  if (pct === 1) flavor = "Perfect score. Are *you* the bot? 👀";
-  else if (pct >= 0.75) flavor = "Not bad. You've got a future in AI detection.";
-  else if (pct >= 0.5) flavor = "50/50 — about as good as a coin flip.";
-  else if (pct >= 0.25) flavor = "The bots won this round.";
-  else flavor = "Zero. They got you completely. Welcome to the future.";
+  if (n >= 8.5) flavor = "You're generous. Or very lonely. Either way, the bots thank you.";
+  else if (n >= 7) flavor = "Solid scores. The AIs are blushing.";
+  else if (n >= 5) flavor = "Lukewarm. The bots have noted this and will remember.";
+  else if (n >= 3) flavor = "Tough crowd. These Sora-generated people did their best.";
+  else flavor = "Brutal. They're not even real and you still rejected them.";
 
   document.getElementById('score-flavor').textContent = flavor;
 }
 
 function replay() {
-  current = 0; correctCount = 0; fooledCount = 0;
+  current = 0; ratings = [];
   shuffled.sort(() => Math.random() - 0.5);
   document.getElementById('score-screen').classList.remove('show');
-  document.getElementById('game-view').style.display = '';
+  document.getElementById('game-view').style.display = 'flex';
   load(0);
 }
 
 // Init
+buildGrid();
 load(0);
 </script>
 </body>
