@@ -185,7 +185,17 @@ const profiles = [
   { name: 'Aiden',  age: 34, profession: 'Venture Capitalist',  education: 'Dartmouth',     height: "6'3\"",  clip: 8 },
 ];
 
-const shuffled = [...profiles].sort(() => Math.random() - 0.5);
+const TOTAL_ROUNDS = 25;
+function buildRounds() {
+  const rounds = [];
+  while (rounds.length < TOTAL_ROUNDS) {
+    const batch = [...profiles].sort(() => Math.random() - 0.5);
+    rounds.push(...batch);
+  }
+  rounds.length = TOTAL_ROUNDS;
+  return rounds;
+}
+let shuffled = buildRounds();
 let current = 0;
 let ratings = []; // all scores given
 let rated = false;
@@ -285,7 +295,7 @@ function showScore() {
 
 function replay() {
   current = 0; ratings = [];
-  shuffled.sort(() => Math.random() - 0.5);
+  shuffled = buildRounds();
   document.getElementById('score-screen').classList.remove('show');
   document.getElementById('game-view').style.display = 'flex';
   load(0);
