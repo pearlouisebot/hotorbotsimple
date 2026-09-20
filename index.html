@@ -149,9 +149,9 @@
       <div class="score-sub" id="score-flavor"></div>
 
       <div class="twist-box fade-in">
-        <div class="twist-label">Plot twist</div>
-        <div class="twist-text">Every single one was AI-generated.</div>
-        <div class="twist-detail">All 8 profiles were created using OpenAI Sora. No real humans — the faces, voices, and mannerisms synthesized from scratch. This is where dating is headed.</div>
+        <div class="twist-label">We Get You</div>
+        <div class="twist-text">We now have enough data to build a basic preference algorithm for you.</div>
+        <div class="twist-detail"></div>
       </div>
 
       <div class="score-grid">
@@ -277,7 +277,7 @@ function showScore() {
   if (n >= 8.5) flavor = "You're generous. Or very lonely. Either way, the bots thank you.";
   else if (n >= 7) flavor = "Solid scores. The AIs are blushing.";
   else if (n >= 5) flavor = "Lukewarm. The bots have noted this and will remember.";
-  else if (n >= 3) flavor = "Tough crowd. These Sora-generated people did their best.";
+  else if (n >= 3) flavor = "Tough Critic. These Sora-generated people did their best.";
   else flavor = "Brutal. They're not even real and you still rejected them.";
 
   document.getElementById('score-flavor').textContent = flavor;
