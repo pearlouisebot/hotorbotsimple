@@ -31,8 +31,8 @@
     .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
 
     /* CARD */
-    .card-wrap { flex: 1; padding: 0 16px; display: flex; flex-direction: column; min-height: 0; }
-    .card { position: relative; border-radius: 28px; overflow: hidden; border: 1px solid var(--border); background: var(--panel); flex: 1; min-height: 280px; }
+    .card-wrap { padding: 0 16px; }
+    .card { position: relative; border-radius: 28px; overflow: hidden; border: 1px solid var(--border); background: var(--panel); aspect-ratio: 3/4; max-height: 52vh; width: 100%; }
     .card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 50%, transparent 100%); }
     .card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; }
